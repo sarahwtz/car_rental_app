@@ -14,7 +14,8 @@ class BrandController extends Controller
      */
     public function index()
     {
-        //
+        $brands = Brand::all();
+        return $brands;
     }
 
     /**
@@ -35,7 +36,8 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $brand = Brand::create($request->all());
+        return $brand;
     }
 
     /**
@@ -46,7 +48,7 @@ class BrandController extends Controller
      */
     public function show(Brand $brand)
     {
-        //
+        return $brand;
     }
 
     /**
@@ -68,8 +70,9 @@ class BrandController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Brand $brand)
-    {
-        //
+    {   
+        $brand->update($request->all());
+        return $brand;
     }
 
     /**
@@ -80,6 +83,7 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
-        //
+       $brand->delete();
+       return ['message' => 'The brand was deleted successfully!'];
     }
 }
