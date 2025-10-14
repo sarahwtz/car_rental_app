@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    protected $brand;
+
+    public function __construct(Brand $brand){
+        $this->brand = $brand;
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,18 +20,8 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brands = Brand::all();
+        $brands = $this->brand->all();
         return $brands;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -36,53 +32,49 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $brand = Brand::create($request->all());
+        //$brand = Brand::create($request->all());
+        $brand = $this->brand->create($request->all());
         return $brand;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Brand  $brand
+     * @param  Integer
      * @return \Illuminate\Http\Response
      */
-    public function show(Brand $brand)
+    public function show($id)
     {
+        $brand = $this->brand->find($id);
         return $brand;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Brand  $brand
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Brand $brand)
-    {
-        //
-    }
+    
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Brand  $brand
+     * @param  Integer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Brand $brand)
+    public function update(Request $request, $id)
     {   
-        $brand->update($request->all());
+       //$brand->update($request->all());
+       $brand = $this->brand->find($id);
+       $brand->update($request->all());
         return $brand;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Brand  $brand
+     * @param  Integer
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Brand $brand)
+    public function destroy($id)
     {
+       $brand = $this->brand->find($id); 
        $brand->delete();
        return ['message' => 'The brand was deleted successfully!'];
     }
