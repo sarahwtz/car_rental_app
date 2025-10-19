@@ -21,7 +21,7 @@ class BrandController extends Controller
     public function index()
     {
         $brands = $this->brand->all();
-        return $brands;
+        return response()->json($brands, 200);
     }
 
     /**
@@ -33,8 +33,10 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         //$brand = Brand::create($request->all());
+        $request->validate($this->brand->rules(), $this->brand->feedback());
+
         $brand = $this->brand->create($request->all());
-        return $brand;
+        return response()->json($brand, 201);
     }
 
     /**
@@ -46,7 +48,10 @@ class BrandController extends Controller
     public function show($id)
     {
         $brand = $this->brand->find($id);
-        return $brand;
+        if($brand === null){
+            return response()->json(['error' => 'The searched item does not exist'], 404);
+        }
+        return response()->json($brand,200);
     }
 
     
@@ -62,8 +67,39 @@ class BrandController extends Controller
     {   
        //$brand->update($request->all());
        $brand = $this->brand->find($id);
+
+          if($brand === null){
+            return response()->json(['error' => 'The requested item does not exist'], 404);
+        }
+
+        if ($request->method() === 'PATCH') {
+           
+
+            $dynamicRules = array();
+
+         
+
+            //percorrendo todas as regras definidas no model  'name' => 'required|unique:brands,name,'.$this->id.'|min:3',
+            foreach($brand->rules() as $input => $rule)  {
+              
+
+                //coletar apenas as regras aplicaveis aos parametros parciais da requisicao PATCH
+                if(array_key_exists($input, $request->all())) {
+                    $dynamicRules[$input] = $rule;
+                }
+            }
+       
+
+            $request->validate($dynamicRules, $brand->feedback()); 
+
+        } else {
+            $request->validate($brand->rules($id), $brand->feedback()); 
+
+        }
+    
+     
        $brand->update($request->all());
-        return $brand;
+       return response()->json($brand, 200);
     }
 
     /**
@@ -75,7 +111,12 @@ class BrandController extends Controller
     public function destroy($id)
     {
        $brand = $this->brand->find($id); 
+
+         if($brand === null){
+            return response()->json(['error' => 'The requested item does not exist'], 404);
+        }
+
        $brand->delete();
-       return ['message' => 'The brand was deleted successfully!'];
+       return response()->json(['message' => 'The brand was deleted successfully!'], 200);
     }
 }
