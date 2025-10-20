@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 
@@ -32,10 +33,18 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        //$brand = Brand::create($request->all());
+       
         $request->validate($this->brand->rules(), $this->brand->feedback());
 
-        $brand = $this->brand->create($request->all());
+        $image = $request->file('image');
+        $image_urn =  $image->store('images', 'public');
+
+    
+       $brand = $this->brand->create([
+        'name' => $request->name,
+        'image' => $image_urn,
+         ]);
+
         return response()->json($brand, 201);
     }
 
@@ -68,22 +77,19 @@ class BrandController extends Controller
        //$brand->update($request->all());
        $brand = $this->brand->find($id);
 
+
           if($brand === null){
             return response()->json(['error' => 'The requested item does not exist'], 404);
         }
 
         if ($request->method() === 'PATCH') {
-           
 
             $dynamicRules = array();
 
-         
 
-            //percorrendo todas as regras definidas no model  'name' => 'required|unique:brands,name,'.$this->id.'|min:3',
             foreach($brand->rules() as $input => $rule)  {
               
-
-                //coletar apenas as regras aplicaveis aos parametros parciais da requisicao PATCH
+              
                 if(array_key_exists($input, $request->all())) {
                     $dynamicRules[$input] = $rule;
                 }
@@ -96,9 +102,20 @@ class BrandController extends Controller
             $request->validate($brand->rules($id), $brand->feedback()); 
 
         }
+
+        // Remove the old file if a new one is uploaded via the request
+        if($request->file('image')) {
+            Storage::disk('public')->delete($brand->image);
+        }
+
+        $image = $request->file('image');
+        $image_urn =  $image->store('images', 'public');
+
     
-     
-       $brand->update($request->all());
+       $brand->update([
+        'name' => $request->name,
+        'image' => $image_urn,
+         ]);
        return response()->json($brand, 200);
     }
 
@@ -115,6 +132,10 @@ class BrandController extends Controller
          if($brand === null){
             return response()->json(['error' => 'The requested item does not exist'], 404);
         }
+
+        // Remove the old file 
+            Storage::disk('public')->delete($brand->image);
+        
 
        $brand->delete();
        return response()->json(['message' => 'The brand was deleted successfully!'], 200);
