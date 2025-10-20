@@ -103,7 +103,7 @@ class BrandController extends Controller
 
         }
 
-        // Remove the old file if a new one is uploaded via the request
+       
         if($request->file('image')) {
             Storage::disk('public')->delete($brand->image);
         }
@@ -133,7 +133,7 @@ class BrandController extends Controller
             return response()->json(['error' => 'The requested item does not exist'], 404);
         }
 
-        // Remove the old file 
+        
             Storage::disk('public')->delete($brand->image);
         
 
