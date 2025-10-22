@@ -18,10 +18,18 @@ class CarModelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return response()->json( $this->carModel->with('brand')->get(), 200);
+   public function index(Request $request)
+{
+    if ($request->has('fields')) {
+        $fields = explode(',', $request->query('fields'));
+        $carModels = $this->carModel->select($fields)->with('brand')->get();
+    } else {
+        $carModels = $this->carModel->with('brand')->get();
     }
+
+    return response()->json($carModels, 200);
+}
+
 
     /**
      * Show the form for creating a new resource.
