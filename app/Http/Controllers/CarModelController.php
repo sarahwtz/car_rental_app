@@ -20,7 +20,7 @@ class CarModelController extends Controller
      */
     public function index()
     {
-        return response()->json( $this->carModel->all(), 200);
+        return response()->json( $this->carModel->with('brand')->get(), 200);
     }
 
     /**
@@ -68,7 +68,7 @@ class CarModelController extends Controller
      */
     public function show($id)
     {
-          $carModel = $this->carModel->find($id);
+        $carModel = $this->carModel->with('brand')->find($id);
         if($carModel === null){
             return response()->json(['error' => 'The searched item does not exist'], 404);
         }
@@ -122,7 +122,7 @@ class CarModelController extends Controller
 
         }
 
-        // Remove the old file if a new one is uploaded via the request
+    
         if($request->file('image')) {
             Storage::disk('public')->delete($carModel->image);
         }
