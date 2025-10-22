@@ -130,7 +130,11 @@ class CarModelController extends Controller
         $image = $request->file('image');
         $image_urn =  $image->store('images/carModels', 'public');
 
-    
+        $carModel->fill($request->all());
+        $carModel->image = $image_urn;
+        $carModel->save();
+
+        /*
       $carModel->update([
         'brand_id' => $request->brand_id,
         'name' => $request->name,
@@ -140,6 +144,7 @@ class CarModelController extends Controller
         'air_bag' => $request->air_bag,
         'abs' => $request->abs,
          ]);
+         */
        return response()->json($carModel, 200);
         
     }

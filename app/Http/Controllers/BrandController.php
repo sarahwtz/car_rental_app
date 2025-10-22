@@ -112,10 +112,10 @@ class BrandController extends Controller
         $image_urn =  $image->store('images', 'public');
 
     
-       $brand->update([
-        'name' => $request->name,
-        'image' => $image_urn,
-         ]);
+       $brand->fill($request->all());
+       $brand->image = $image_urn;
+       $brand->save();
+
        return response()->json($brand, 200);
     }
 
