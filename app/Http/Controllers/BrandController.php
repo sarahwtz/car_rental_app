@@ -19,11 +19,36 @@ class BrandController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $brands = $this->brand->with('carModels')->get();
-        return response()->json($brands, 200);
+   public function index(Request $request)
+{
+    $brands = $this->brand->query();
+
+    if ($request->has('fields_carModels')) {
+        $fields_carModels = $request->query('fields_carModels');
+        $brands = $brands->with('carModels:id,' . $fields_carModels);
+    } else {
+        $brands = $brands->with('carModels');
     }
+
+    if ($request->has('filter')) {
+        $filters = explode(';', $request->filter);
+        foreach ($filters as $condition) {
+            $c = explode(':', $condition);
+            $brands = $brands->where($c[0], $c[1], $c[2]);
+        }
+    }
+
+    if ($request->has('fields')) {
+        $fields = explode(',', $request->query('fields'));
+        $brands = $brands->select($fields);
+    }
+
+ 
+    $brands = $brands->get();
+    return response()->json($brands, 200);
+}
+
+
 
     /**
      * Store a newly created resource in storage.
