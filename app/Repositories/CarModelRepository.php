@@ -3,7 +3,7 @@ namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BrandRepository
+class CarModelRepository
 {
     protected $model;
 

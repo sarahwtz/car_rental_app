@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use App\Models\CarModel;
 use Illuminate\Http\Request;
+use App\Repositories\CarModelRepository;
 
 class CarModelController extends Controller
 {
@@ -20,39 +21,25 @@ class CarModelController extends Controller
      */
    public function index(Request $request)
 {
-    $carModels = $this->carModel->query();
+   $carModelRepository = new CarModelRepository($this->carModel);
 
-   
-    if ($request->has('fields_brand')) {
-        $fields_brand = $request->query('fields_brand');
-        $carModels = $carModels->with('brand:id,' . $fields_brand);
-    } else {
-        $carModels = $carModels->with('brand');
-    }
-
-    if($request->has('filter')) {
-        $filters = explode(';',$request->filter);
-        foreach($filters as $key => $condition) {
-
-            $c = explode(':', $condition);
-            $carModels = $carModels->where($c[0], $c[1], $c[2]);
-
+        if ($request->has('fields_brand')) {
+            $fields_carModels = 'brand:id,' . $request->query('fields_brand');
+            $carModelRepository->selectRelatedFields($fields_carModels);
+        } else {
+            $carModelRepository->selectRelatedFields('brand');
         }
 
- 
-        
-    }
+        if ($request->has('filter')) {
+            $carModelRepository->filter($request->filter);
+        }
 
+        if ($request->has('fields')) {
+           $carModelRepository->selectFields($request->fields);
+        }
 
-    if ($request->has('fields')) {
-        $fields = explode(',', $request->query('fields'));
-        $carModels = $carModels->select($fields);
-    }
-
-  
-    $carModels = $carModels->get();
-
-    return response()->json($carModels, 200);
+     
+        return response()->json($carModelRepository->getResult(), 200);
 }
 
 
