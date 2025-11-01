@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\CarModel;
 use Illuminate\Http\Request;
 use App\Repositories\CarModelRepository;
+use App\Http\Requests\UpdateCarModelRequest;
+
 
 class CarModelController extends Controller
 {
@@ -112,62 +114,29 @@ class CarModelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\CarModel  $carModel
      * @return \Illuminate\Http\Response
+     * 
      */
-    public function update(Request $request, $id)
-    {
-           $carModel = $this->carModel->find($id);
+  public function update(UpdateCarModelRequest $request, $id)
+{
+    $carModel = $this->carModel->find($id);
 
-          if($carModel === null){
-            return response()->json(['error' => 'The requested item does not exist'], 404);
-        }
-
-        if ($request->method() === 'PATCH') {
-
-            $dynamicRules = array();
-
-
-            foreach($carModel->rules() as $input => $rule)  {
-              
-              
-                if(array_key_exists($input, $request->all())) {
-                    $dynamicRules[$input] = $rule;
-                }
-            }
-       
-
-            $request->validate($dynamicRules,$carModel->feedback()); 
-
-        } else {
-            $request->validate($carModel->rules(), $carModel->feedback()); 
-
-        }
-
-    
-        if($request->file('image')) {
-            Storage::disk('public')->delete($carModel->image);
-        }
-
-        $image = $request->file('image');
-        $image_urn =  $image->store('images/carModels', 'public');
-
-        $carModel->fill($request->all());
-        $carModel->image = $image_urn;
-        $carModel->save();
-
-        /*
-      $carModel->update([
-        'brand_id' => $request->brand_id,
-        'name' => $request->name,
-        'image' => $image_urn,
-        'doors_count' => $request->doors_count,
-        'seats' => $request->seats,
-        'air_bag' => $request->air_bag,
-        'abs' => $request->abs,
-         ]);
-         */
-       return response()->json($carModel, 200);
-        
+    if (!$carModel) {
+        return response()->json(['error' => 'The requested item does not exist'], 404);
     }
+
+    $data = $request->validated();
+
+    if ($request->hasFile('image')) {
+        Storage::disk('public')->delete($carModel->image);
+        $data['image'] = $request->file('image')->store('images/carModels', 'public');
+    }
+
+    $carModel->update($data);
+
+    return response()->json($carModel, 200);
+}
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -183,7 +152,6 @@ class CarModelController extends Controller
             return response()->json(['error' => 'The requested item does not exist'], 404);
         }
 
-        // Remove the old file 
             Storage::disk('public')->delete($carModel->image);
         
 
