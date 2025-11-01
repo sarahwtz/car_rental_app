@@ -42,9 +42,8 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'basic', // Alterado para Basic Auth
             'provider' => 'users',
-            'hash' => false,
         ],
     ],
 

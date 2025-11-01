@@ -11,84 +11,58 @@ class CarPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * Determine whether the user can view any cars.
      */
     public function viewAny(User $user)
     {
-        //
+        return true;
     }
 
     /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Car  $car
-     * @return \Illuminate\Auth\Access\Response|bool
+     * Determine whether the user can view a specific car.
      */
     public function view(User $user, Car $car)
     {
-        //
+        return true;
     }
 
     /**
-     * Determine whether the user can create models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * Determine whether the user can create a car.
      */
     public function create(User $user)
     {
-        //
+        return true;
     }
 
     /**
-     * Determine whether the user can update the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Car  $car
-     * @return \Illuminate\Auth\Access\Response|bool
+     * Determine whether the user can update a car.
      */
     public function update(User $user, Car $car)
     {
-        //
+        return true;
     }
 
     /**
-     * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Car  $car
-     * @return \Illuminate\Auth\Access\Response|bool
+     * Determine whether the user can delete a car.
      */
     public function delete(User $user, Car $car)
     {
-        //
+        return true;
     }
 
     /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Car  $car
-     * @return \Illuminate\Auth\Access\Response|bool
+     * Determine whether the user can restore a car.
      */
     public function restore(User $user, Car $car)
     {
-        //
+        return true;
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Car  $car
-     * @return \Illuminate\Auth\Access\Response|bool
+     * Determine whether the user can permanently delete a car.
      */
     public function forceDelete(User $user, Car $car)
     {
-        //
+        return true;
     }
 }

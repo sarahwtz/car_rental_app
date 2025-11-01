@@ -6,25 +6,18 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCarRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
-            //
+            'model_id' => 'sometimes|required|integer|exists:car_models,id',
+            'license_plate' => 'sometimes|required|string|max:20|unique:cars,license_plate,' . $this->route('id'),
+            'available' => 'sometimes|required|boolean',
+            'km' => 'sometimes|required|numeric|min:0',
         ];
     }
 }
