@@ -60,6 +60,8 @@ class CarController extends Controller
         return response()->json($car, 200);
     }
 
+    
+
    public function update(UpdateCarRequest $request, $id)
 {
     $car = $this->car->find($id);
