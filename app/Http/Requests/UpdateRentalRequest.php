@@ -13,7 +13,7 @@ class UpdateRentalRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,9 +22,17 @@ class UpdateRentalRequest extends FormRequest
      * @return array
      */
     public function rules()
-    {
-        return [
-            //
-        ];
-    }
+{
+    return [
+        'client_id' => 'sometimes|exists:clients,id',
+        'car_id' => 'sometimes|exists:cars,id',
+        'start_date' => 'sometimes|date',
+        'expected_end_date' => 'sometimes|date|after_or_equal:start_date',
+        'actual_end_date' => 'nullable|date|after_or_equal:start_date|required_with:end_km',
+        'daily_rate' => 'sometimes|numeric|min:0',
+        'start_km' => 'sometimes|integer|min:0',
+        'end_km' => 'nullable|integer|min:0|required_with:actual_end_date',
+    ];
+}
+
 }

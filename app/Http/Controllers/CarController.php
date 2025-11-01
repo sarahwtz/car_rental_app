@@ -40,6 +40,8 @@ class CarController extends Controller
         return response()->json($carRepository->getResult(), 200);
     }
 
+    
+
    public function store(StoreCarRequest $request)
 {
     $car = $this->car->create($request->validated());

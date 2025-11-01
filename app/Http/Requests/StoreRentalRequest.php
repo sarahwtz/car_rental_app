@@ -13,7 +13,7 @@ class StoreRentalRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,17 @@ class StoreRentalRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'client_id' => 'required|exists:clients,id',
+            'car_id' => 'required|exists:cars,id',
+            'start_date' => 'required|date',
+            'expected_end_date' => 'required|date|after_or_equal:start_date',
+            'actual_end_date' => 'nullable|date|after_or_equal:start_date',
+            'daily_rate' => 'required|numeric|min:0',
+            'start_km' => 'required|integer|min:0',
+            'end_km' => 'nullable|integer|min:0',
         ];
     }
 }
+
+
+
