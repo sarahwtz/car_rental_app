@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use App\Repositories\BrandRepository;
+use App\Http\Requests\StoreBrandRequest;
+use App\Http\Requests\UpdateBrandRequest;
+
 
 class BrandController extends Controller
 {
@@ -45,10 +48,8 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+   public function store(StoreBrandRequest $request)
     {
-        $request->validate($this->brand->rules(), $this->brand->feedback());
-
         $image = $request->file('image');
         $image_urn = $image->store('images', 'public');
 
@@ -77,26 +78,12 @@ class BrandController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateBrandRequest $request, $id)
     {
         $brand = $this->brand->find($id);
 
-        if ($brand === null) {
+        if (!$brand) {
             return response()->json(['error' => 'The requested item does not exist'], 404);
-        }
-
-        if ($request->method() === 'PATCH') {
-            $dynamicRules = [];
-
-            foreach ($brand->rules() as $input => $rule) {
-                if (array_key_exists($input, $request->all())) {
-                    $dynamicRules[$input] = $rule;
-                }
-            }
-
-            $request->validate($dynamicRules, $brand->feedback());
-        } else {
-            $request->validate($brand->rules($id), $brand->feedback());
         }
 
         if ($request->file('image')) {

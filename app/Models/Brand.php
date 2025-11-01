@@ -15,23 +15,7 @@ class Brand extends Model
     return $this->hasMany(CarModel::class);
 }
 
-    public function rules(){
-        return [
-            'name' => 'required|unique:brands,name,'.$this->id.'|min:3',
-            'image' => 'required|file|mimes:png'
-        ];
 
-    }
-
-    public function feedback(){
-        return [
-            'required' => 'The :attribute field is required',
-            'image.mime' => 'Please upload a PNG image file',
-            'name.unique' => 'This Brand name already exists',
-            'name.min' => 'The name must be at least 3 characters long.'
-        ];
-
-    }
 
 }
 
