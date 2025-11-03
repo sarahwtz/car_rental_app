@@ -7,6 +7,7 @@ use App\Models\CarModel;
 use Illuminate\Http\Request;
 use App\Repositories\CarModelRepository;
 use App\Http\Requests\UpdateCarModelRequest;
+use App\Http\Requests\StoreCarModelRequest;
 
 
 class CarModelController extends Controller
@@ -61,25 +62,17 @@ class CarModelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCarModelRequest  $request)
     {
-        $request->validate($this->carModel->rules(), $this->carModel->feedback());
+        $data = $request->validated(); 
 
-        $image = $request->file('image');
-        $image_urn =  $image->store('images/carModels', 'public');
+    if ($request->hasFile('image')) {
+        $data['image'] = $request->file('image')->store('images/carModels', 'public');
+    }
 
-    
-       $carModel = $this->carModel->create([
-       'brand_id' => $request->brand_id,
-        'name' => $request->name,
-        'image' => $image_urn,
-        'doors_count' => $request->doors_count,
-        'seats' => $request->seats,
-        'air_bag' => $request->air_bag,
-        'abs' => $request->abs,
-         ]);
+    $carModel = $this->carModel->create($data);
 
-        return response()->json($carModel, 201);
+    return response()->json($carModel, 201);
     }
 
     /**

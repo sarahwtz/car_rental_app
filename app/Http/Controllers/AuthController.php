@@ -19,24 +19,32 @@ class AuthController extends Controller
     return response()->json([
         'access_token' => $token,
         'token_type' => 'bearer',
-        'expires_in' => JWTAuth::factory()->getTTL() * 60,
+    
 
     ]);
     }
 
-
+    
 
     public function logout() {
-        return 'logout';
-    }
+    JWTAuth::parseToken()->invalidate();
+    return response()->json(['message' => 'Logged out successfully']);
+}
+    
 
     
     public function refresh() {
-        return 'refresh';
+         $newToken = JWTAuth::parseToken()->refresh();
+
+    return response()->json([
+        'access_token' => $newToken,
+        'token_type' => 'bearer',
+            ]);
+
     }
 
     
     public function me() {
-        return 'me';
+        return response()->json(auth()->user());
     }
 }
