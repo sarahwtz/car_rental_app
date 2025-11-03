@@ -42,8 +42,9 @@ return [
         ],
 
         'api' => [
-            'driver' => 'basic', // Alterado para Basic Auth
+            'driver' => 'jwt',
             'provider' => 'users',
+           
         ],
     ],
 
@@ -68,6 +69,7 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+            // 'hash' => false,
         ],
 
         // 'users' => [

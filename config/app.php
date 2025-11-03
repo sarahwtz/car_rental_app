@@ -175,6 +175,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // add JWT Auth Service Provider
+        PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider::class,
+
     ],
 
     /*
