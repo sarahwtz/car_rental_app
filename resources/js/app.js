@@ -21,6 +21,8 @@ window.Vue = require('vue').default;
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('login-component', require('./components/Login.vue').default);
+Vue.component('home-component', require('./components/Home.vue').default);
+
 
 
 /**
